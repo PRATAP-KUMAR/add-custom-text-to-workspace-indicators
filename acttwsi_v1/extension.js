@@ -99,19 +99,12 @@ export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extensi
     _nWorkSpacesSettingsChanged() {
         this._workSpaceIndicators.remove_child(this._indicator);
         this._workSpaceIndicators.remove_child(this._label);
-
-        this._sourceId = GLib.timeout_add_seconds(
-            GLib.PRIORITY_DEFAULT,
-            1,
-            () => {
-                this._workSpaces();
-                this._toggleChanged();
-                this._workSpaceIndicators.add_child(this._label);
-                this._workSpaceIndicators.add_child(this._indicator);
-
-                return GLib.SOURCE_CONTINUE;
-            }
-        );
+        setTimeout(() => {
+            this._workSpaces();
+            this._toggleChanged();
+            this._workSpaceIndicators.add_child(this._label);
+            this._workSpaceIndicators.add_child(this._indicator);
+        }, 200);
     }
 
     _showHide(children, boolean = false) {
@@ -128,11 +121,6 @@ export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extensi
     _destroy() {
         let children = this._workSpaceIndicators.get_children();
         this._showHide(children);
-
-        if (this._sourceId) {
-            GLib.Source.remove(this._sourceId);
-            this._sourceId = null;
-        }
 
         if (this._workSpaceIndicatorsShowHideId)
             this._settings.disconnect(this._workSpaceIndicatorsShowHideId);
