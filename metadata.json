@@ -1,0 +1,9 @@
+{
+  "name": "Add Custom Text to Workspace Indicators",
+  "description": "Add custom text to workspace indicators",
+  "uuid": "AddCustomTextToWorkSpaceIndicators@pratap.fastmail.fm",
+  "settings-schema": "org.gnome.shell.extensions.add-text-to-work-space-indicators",
+  "shell-version": [
+    "45"
+  ]
+}
