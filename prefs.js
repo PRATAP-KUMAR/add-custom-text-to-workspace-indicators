@@ -10,7 +10,7 @@ export default class BringoutExtensionPreferences extends ExtensionPreferences {
 
         const CustomText = () => {
             let textUrlEntry = new Gtk.Entry();
-            textUrlEntry.set_width_chars(50);
+            textUrlEntry.set_width_chars(42);
             textUrlEntry.set_placeholder_text('Enter your text or leave it blank for extensions default text');
 
             textUrlEntry.set_text(window._settings.get_string('custom-text'));
@@ -51,6 +51,5 @@ export default class BringoutExtensionPreferences extends ExtensionPreferences {
         window._settings.bind('hide-work-space-indicators', workSpaceIndicatorsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
         window._settings.bind('show-custom-text', showCustomTextRow, 'active', Gio.SettingsBindFlags.DEFAULT);
         window._settings.bind('show-custom-indicators', showCustomIndicatorsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
-        window.maximize();
     }
 }

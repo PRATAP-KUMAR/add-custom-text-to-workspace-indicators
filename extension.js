@@ -5,12 +5,12 @@ import Clutter from 'gi://Clutter';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as config from 'resource:///org/gnome/shell/misc/config.js';
-import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
+import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extension {
     enable() {
         this._settings = this.getSettings();
-        this._nWorkSpacesSettings = new Gio.Settings({ schema_id: 'org.gnome.desktop.wm.preferences' });
+        this._nWorkSpacesSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.wm.preferences'});
 
         this._workSpaceIndicators = Main.panel.statusArea.activities.get_child_at_index(0);
 
@@ -52,24 +52,6 @@ export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extensi
         this._nWorkSpacesSettingsChangedId = this._nWorkSpacesSettings.connect('changed::num-workspaces', this._nWorkSpacesSettingsChanged.bind(this));
     }
 
-    _nWorkSpacesSettingsChanged() {
-        this._workSpaceIndicators.remove_child(this._indicator);
-        this._workSpaceIndicators.remove_child(this._label);
-        setTimeout(() => {
-            this._workSpaces();
-            this._toggleChanged();
-            this._workSpaceIndicators.add_child(this._label);
-            this._workSpaceIndicators.add_child(this._indicator);
-        }, 200);
-    }
-
-    _toggleChanged() {
-        let children = this._workSpaceIndicators.get_children();
-
-        let boolean = this._settings.get_boolean('hide-work-space-indicators');
-        this._showHide(children, boolean);
-    }
-
     _setLabel() {
         const boolean = this._settings.get_boolean('show-custom-text');
         if (!boolean) {
@@ -87,12 +69,18 @@ export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extensi
             this._label.show();
     }
 
+    _toggleChanged() {
+        let children = this._workSpaceIndicators.get_children();
+
+        let boolean = this._settings.get_boolean('hide-work-space-indicators');
+        this._showHide(children, boolean);
+    }
+
     _workSpaces() {
         const boolean = this._settings.get_boolean('show-custom-indicators');
         if (!boolean) {
             if (this._indicator)
                 this._indicator.hide();
-
             return;
         }
         const obj = Main.createWorkspacesAdjustment(this._workSpaceIndicators);
@@ -108,39 +96,46 @@ export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extensi
             this._indicator.show();
     }
 
+    _nWorkSpacesSettingsChanged() {
+        this._workSpaceIndicators.remove_child(this._indicator);
+        this._workSpaceIndicators.remove_child(this._label);
+        setTimeout(() => {
+            this._workSpaces();
+            this._toggleChanged();
+            this._workSpaceIndicators.add_child(this._label);
+            this._workSpaceIndicators.add_child(this._indicator);
+        }, 200);
+    }
+
     _showHide(children, boolean = false) {
         children.forEach(child => {
             if ('width-multiplier' in child) {
                 if (boolean)
                     child.hide();
                 else
-                child.show();
-        }
-    });
-}
+                    child.show();
+            }
+        });
+    }
 
-_destroy() {
+    _destroy() {
         let children = this._workSpaceIndicators.get_children();
         this._showHide(children);
-        
+
         if (this._workSpaceIndicatorsShowHideId)
             this._settings.disconnect(this._workSpaceIndicatorsShowHideId);
-
 
         if (this._workSpaceIndicatorsCustomTextId)
             this._settings.disconnect(this._workSpaceIndicatorsCustomTextId);
 
 
-        if (this._nWorkSpacesSettingsChangedId)
-            this._nWorkSpacesSettings.disconnect(this._nWorkSpacesSettingsChangedId);
-
-
         if (this._labelShowChangedId)
             this._settings.disconnect(this._labelShowChangedId);
-
 
         if (this._indicatorsChangedId)
             this._settings.disconnect(this._indicatorsChangedId);
 
+        if (this._nWorkSpacesSettingsChangedId)
+            this._nWorkSpacesSettings.disconnect(this._nWorkSpacesSettingsChangedId);
     }
 }
