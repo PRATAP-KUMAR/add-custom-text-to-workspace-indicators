@@ -15,19 +15,6 @@ export default class BringoutExtensionPreferences extends ExtensionPreferences {
         setButtonColor(window._labelColorButton, 'label-color', window._settings);
         setButtonColor(window._customIndicatorColorButton, 'custom-indicator-color', window._settings);
 
-        const CustomText = () => {
-            let textUrlEntry = new Gtk.Entry();
-            textUrlEntry.set_width_chars(42);
-            textUrlEntry.set_placeholder_text('Enter your text or leave it blank for extensions default text');
-
-            textUrlEntry.set_text(window._settings.get_string('custom-text'));
-            textUrlEntry.connect('changed', entry => {
-                window._settings.set_string('custom-text', entry.get_text());
-            });
-
-            return textUrlEntry;
-        };
-
         const page = new Adw.PreferencesPage();
         window.add(page);
 
@@ -49,11 +36,16 @@ export default class BringoutExtensionPreferences extends ExtensionPreferences {
         });
         group.add(showCustomTextRow);
 
-        const customText = new Adw.ActionRow({
-            title: 'Custom Text',
+        const entryRow = new Adw.EntryRow({
+            title: 'Enter your text or leave it blank for extensions default text',
         });
-        customText.add_suffix(CustomText());
-        group.add(customText);
+
+        entryRow.set_text(window._settings.get_string('custom-text'));
+        entryRow.connect('changed', entry => {
+            window._settings.set_string('custom-text', entry.get_text());
+        });
+        entryRow.add_prefix(new Gtk.Label({label: 'Custom Text'}));
+        group.add(entryRow);
 
         const labelColorRow = new Adw.ActionRow({
             title: 'Custom Text Color',

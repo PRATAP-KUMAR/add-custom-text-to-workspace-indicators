@@ -11,7 +11,7 @@ import Gtk from 'gi://Gtk';
  */
 export function setButtonColor(button, id, settings) {
     let rgba = new Gdk.RGBA();
-    let hexString = settings.get_string(id) === '' ? '#FFFFFF00' : settings.get_string(id);
+    let hexString = settings.get_string(id) === '' ? '#00000000' : settings.get_string(id);
     rgba.parse(hexString);
     button.set_rgba(rgba);
 }
@@ -24,7 +24,7 @@ export function setButtonColor(button, id, settings) {
  * @param {object} actionRow set button color
  */
 export function colorButton(button, id, settings, actionRow) {
-    let resetColorButton = new Gtk.Button({margin_start: 5});
+    let resetColorButton = new Gtk.Button();
     resetColorButton.set_label('Reset');
     resetColorButton.connect('clicked', () => {
         settings.set_string(id, '');
@@ -44,11 +44,8 @@ export function colorButton(button, id, settings, actionRow) {
  * @param {object} settings 'settings'
  */
 function selectButtonColor(button, id, settings) {
-    let hbox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL, margin_top: 5, halign: Gtk.Align.END});
     button.connect('notify::rgba', () => onPanelColorChanged(button, id, settings));
-    hbox.append(button);
-
-    return hbox;
+    return button;
 }
 
 /**
@@ -60,37 +57,23 @@ function selectButtonColor(button, id, settings) {
 function onPanelColorChanged(button, id, settings) {
     let rgba = button.get_rgba();
     let css = rgba.to_string();
-    let hexString = cssHexString(css);
-    settings.set_string(id, hexString);
+    let hex = RGBAToHexA(css);
+    settings.set_string(id, hex);
 }
 
+// https://stackoverflow.com/a/73401564
 /**
  *
- * @param {string} css 'css'
+ * @param {string} rgba rgba
+ * @param {string} forceRemoveAlpha boolean
  */
-function cssHexString(css) {
-    let rrggbb = '#';
-    let start;
-    for (let loop = 0; loop < 3; loop++) {
-        let end = 0;
-        let xx = '';
-        for (let loop1 = 0; loop1 < 2; loop1++) {
-            while (true) {
-                let x = css.slice(end, end + 1);
-                if (x === '(' || x === ',' || x === ')')
-                    break;
-                end += 1;
-            }
-            if (loop1 === 0) {
-                end += 1;
-                start = end;
-            }
-        }
-        xx = parseInt(css.slice(start, end)).toString(16);
-        if (xx.length === 1)
-            xx = `0${xx}`;
-        rrggbb += xx;
-        css = css.slice(end);
-    }
-    return rrggbb;
+function RGBAToHexA(rgba, forceRemoveAlpha = false) {
+    return `#${rgba.replace(/^rgba?\(|\s+|\)$/g, '')
+        .split(',')
+        .filter((_, index) => !forceRemoveAlpha || index !== 3)
+        .map(string => parseFloat(string))
+        .map((number, index) => index === 3 ? Math.round(number * 255) : number)
+        .map(number => number.toString(16))
+        .map(string => string.length === 1 ? `0${string}` : string)
+        .join('')}`;
 }
