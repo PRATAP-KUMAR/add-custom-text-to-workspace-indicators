@@ -2,11 +2,18 @@ import Adw from 'gi://Adw';
 import Gio from 'gi://Gio';
 import Gtk from 'gi://Gtk';
 
-import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import { ExtensionPreferences } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+
+import { setButtonColor, colorButton } from './helperFunctions.js';
 
 export default class BringoutExtensionPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         window._settings = this.getSettings();
+
+        window._labelColorButton = new Gtk.ColorButton();
+        window._customIndicatorColorButton = new Gtk.ColorButton();
+        setButtonColor(window._labelColorButton, 'label-color', window._settings);
+        setButtonColor(window._customIndicatorColorButton, 'custom-indicator-color', window._settings);
 
         const CustomText = () => {
             let textUrlEntry = new Gtk.Entry();
@@ -47,6 +54,16 @@ export default class BringoutExtensionPreferences extends ExtensionPreferences {
         });
         customText.add_suffix(CustomText());
         group.add(customText);
+
+        const labelColorRow = new Adw.ActionRow({
+            title: 'Custom Text Color',
+        });
+        group.add(colorButton(window._labelColorButton, 'label-color', window._settings, labelColorRow));
+
+        const customIndicatorColorRow = new Adw.ActionRow({
+            title: 'Custom Indicator Color',
+        });
+        group.add(colorButton(window._customIndicatorColorButton, 'custom-indicator-color', window._settings, customIndicatorColorRow));
 
         window._settings.bind('hide-work-space-indicators', workSpaceIndicatorsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
         window._settings.bind('show-custom-text', showCustomTextRow, 'active', Gio.SettingsBindFlags.DEFAULT);

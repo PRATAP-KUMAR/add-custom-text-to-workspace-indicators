@@ -1,5 +1,5 @@
 {
-    "name": "bring-out-submenu-extension",
+    "name": "add-custom-text-to-workspace-indicators",
     "version": "1.0.0",
     "description": "gnome-shell-extension",
     "main": "extension.js",

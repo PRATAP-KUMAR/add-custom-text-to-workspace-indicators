@@ -25,5 +25,17 @@
             <description>Description</description>
         </key>
 
+        <key name="label-color" type="s">
+            <default>''</default>
+            <summary>Label Color</summary>
+            <description>Description</description>
+        </key>
+
+        <key name="custom-indicator-color" type="s">
+            <default>''</default>
+            <summary>Custom Indicator Color</summary>
+            <description>Description</description>
+        </key>
+
     </schema>
 </schemalist>

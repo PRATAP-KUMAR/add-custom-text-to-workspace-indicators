@@ -7,7 +7,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as config from 'resource:///org/gnome/shell/misc/config.js';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extension {
+export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extension {
     enable() {
         this._settings = this.getSettings();
         this._nWorkSpacesSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.wm.preferences'});
@@ -26,8 +26,9 @@ export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extensi
 
         this._connectSettings();
         this._setLabel();
-        this._toggleChanged();
-        this._workSpaces();
+        this._systemIndicatorsSettingsChanged();
+        this._cumstomWorkSpaceIndicators();
+        this._onColorChange();
 
         this._workSpaceIndicators.add_child(this._label);
         this._workSpaceIndicators.add_child(this._indicator);
@@ -45,11 +46,13 @@ export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extensi
     }
 
     _connectSettings() {
-        this._workSpaceIndicatorsShowHideId = this._settings.connect('changed::hide-work-space-indicators', this._toggleChanged.bind(this));
+        this._systemIndicatorsSettingsChangedId = this._settings.connect('changed::hide-work-space-indicators', this._systemIndicatorsSettingsChanged.bind(this));
         this._workSpaceIndicatorsCustomTextId = this._settings.connect('changed::custom-text', this._setLabel.bind(this));
         this._labelShowChangedId = this._settings.connect('changed::show-custom-text', this._setLabel.bind(this));
-        this._indicatorsChangedId = this._settings.connect('changed::show-custom-indicators', this._workSpaces.bind(this));
+        this._indicatorsChangedId = this._settings.connect('changed::show-custom-indicators', this._cumstomWorkSpaceIndicators.bind(this));
         this._nWorkSpacesSettingsChangedId = this._nWorkSpacesSettings.connect('changed::num-workspaces', this._nWorkSpacesSettingsChanged.bind(this));
+        this._onLabelColorChangedId = this._settings.connect('changed::label-color', this._onColorChange.bind(this));
+        this._onCustomIndicatorColorChangedId = this._settings.connect('changed::custom-indicator-color', this._onColorChange.bind(this));
     }
 
     _setLabel() {
@@ -69,14 +72,14 @@ export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extensi
             this._label.show();
     }
 
-    _toggleChanged() {
+    _systemIndicatorsSettingsChanged() {
         let children = this._workSpaceIndicators.get_children();
 
         let boolean = this._settings.get_boolean('hide-work-space-indicators');
         this._showHide(children, boolean);
     }
 
-    _workSpaces() {
+    _cumstomWorkSpaceIndicators() {
         const boolean = this._settings.get_boolean('show-custom-indicators');
         if (!boolean) {
             if (this._indicator)
@@ -104,14 +107,25 @@ export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extensi
             GLib.PRIORITY_DEFAULT,
             1,
             () => {
-                this._workSpaces();
-                this._toggleChanged();
+                this._cumstomWorkSpaceIndicators();
+                this._systemIndicatorsSettingsChanged();
                 this._workSpaceIndicators.add_child(this._label);
                 this._workSpaceIndicators.add_child(this._indicator);
 
                 return GLib.SOURCE_CONTINUE;
             }
         );
+    }
+
+    _onColorChange() {
+        let labelColor = this._settings.get_string('label-color');
+        let customIndicatorColor = this._settings.get_string('custom-indicator-color');
+
+        if (labelColor !== '')
+            this._label.set_style(`color: ${labelColor}`);
+
+        if (customIndicatorColor !== '')
+            this._indicator.set_style(`color: ${customIndicatorColor}`);
     }
 
     _showHide(children, boolean = false) {
@@ -134,12 +148,11 @@ export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extensi
             this._sourceId = null;
         }
 
-        if (this._workSpaceIndicatorsShowHideId)
-            this._settings.disconnect(this._workSpaceIndicatorsShowHideId);
+        if (this._systemIndicatorsSettingsChangedId)
+            this._settings.disconnect(this._systemIndicatorsSettingsChangedId);
 
         if (this._workSpaceIndicatorsCustomTextId)
             this._settings.disconnect(this._workSpaceIndicatorsCustomTextId);
-
 
         if (this._labelShowChangedId)
             this._settings.disconnect(this._labelShowChangedId);
@@ -149,5 +162,11 @@ export default class AddCustomTextToWorkSpaceActivitiesExtension extends Extensi
 
         if (this._nWorkSpacesSettingsChangedId)
             this._nWorkSpacesSettings.disconnect(this._nWorkSpacesSettingsChangedId);
+
+        if (this._onLabelColorChangedId)
+            this._settings.disconnect(this._onLabelColorChangedId);
+
+        if (this._onCustomIndicatorColorChangedId)
+            this._settings.disconnect(this._onCustomIndicatorColorChangedId);
     }
 }
