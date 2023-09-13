@@ -11,7 +11,7 @@ import Gtk from 'gi://Gtk';
  */
 export function setButtonColor(button, id, settings) {
     let rgba = new Gdk.RGBA();
-    let hexString = settings.get_string(id) === '' ? '#00000000' : settings.get_string(id);
+    let hexString = settings.get_string(id) === '' ? '#ABCDEF00' : settings.get_string(id);
     rgba.parse(hexString);
     button.set_rgba(rgba);
 }
