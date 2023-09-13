@@ -4,7 +4,7 @@ import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-import {setButtonColor, colorButton} from './helperFunctions.js';
+import {setButtonColor, colorButton} from './helperFunctionsForPrefs.js';
 
 export default class BringoutExtensionPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
