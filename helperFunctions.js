@@ -18,14 +18,13 @@ export function setButtonColor(button, id, settings) {
 
 /**
  *
- * @param {label} label label
  * @param {object} button button
  * @param {string} id id
  * @param {object} settings settings
+ * @param {object} actionRow set button color
  */
 export function colorButton(button, id, settings, actionRow) {
-
-    let resetColorButton = new Gtk.Button({ margin_start: 5 });
+    let resetColorButton = new Gtk.Button({margin_start: 5});
     resetColorButton.set_label('Reset');
     resetColorButton.connect('clicked', () => {
         settings.set_string(id, '');
@@ -33,7 +32,7 @@ export function colorButton(button, id, settings, actionRow) {
     });
 
     actionRow.add_suffix(selectButtonColor(button, id, settings));
-    actionRow.add_suffix(resetColorButton)
+    actionRow.add_suffix(resetColorButton);
 
     return actionRow;
 }
@@ -45,7 +44,7 @@ export function colorButton(button, id, settings, actionRow) {
  * @param {object} settings 'settings'
  */
 function selectButtonColor(button, id, settings) {
-    let hbox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, margin_top: 5, halign: Gtk.Align.END });
+    let hbox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL, margin_top: 5, halign: Gtk.Align.END});
     button.connect('notify::rgba', () => onPanelColorChanged(button, id, settings));
     hbox.append(button);
 
