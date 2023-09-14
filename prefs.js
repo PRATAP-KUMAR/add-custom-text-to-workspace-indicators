@@ -40,21 +40,6 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences exte
             title: 'Enter your text or leave it blank for extensions default text',
             'enable-emoji-completion': true,
         });
-
-        // export function colorButton(button, id, settings, actionRow) {
-        //     let resetColorButton = new Gtk.Button();
-        //     resetColorButton.set_label('Reset');
-        //     resetColorButton.connect('clicked', () => {
-        //         settings.set_string(id, '');
-        //         setButtonColor(button, id, settings);
-        //     });
-
-        //     actionRow.add_suffix(selectButtonColor(button, id, settings));
-        //     actionRow.add_suffix(resetColorButton);
-
-        //     return actionRow;
-        // }
-
         entryRow.set_text(window._settings.get_string('custom-text'));
         entryRow.connect('changed', entry => {
             window._settings.set_string('custom-text', entry.get_text());
