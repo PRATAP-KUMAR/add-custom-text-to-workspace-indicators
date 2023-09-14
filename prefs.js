@@ -38,6 +38,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences exte
 
         const entryRow = new Adw.EntryRow({
             title: 'Enter your text or leave it blank for extensions default text',
+            'enable-emoji-completion': true,
         });
 
         entryRow.set_text(window._settings.get_string('custom-text'));
