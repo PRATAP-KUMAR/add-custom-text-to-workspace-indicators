@@ -39,6 +39,23 @@ export function colorButton(button, id, settings, actionRow) {
 
 /**
  *
+ * @param {object} settings settings
+ * @param {string} id schema_id
+ * @param {object} row entry row
+ */
+export function clearTextButton(settings, id, row) {
+    let clearButton = new Gtk.Button();
+    clearButton.set_label('Clear Text');
+    clearButton.connect('clicked', () => {
+        settings.set_string(id, '');
+        row.set_text(settings.get_string(id));
+    });
+
+    return clearButton;
+}
+
+/**
+ *
  * @param {object} button 'button'
  * @param {string} id 'id'
  * @param {object} settings 'settings'

@@ -4,7 +4,7 @@ import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-import {setButtonColor, colorButton} from './prefs/helperFunctions.js';
+import {setButtonColor, colorButton, clearTextButton} from './prefs/helperFunctions.js';
 
 export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
@@ -41,11 +41,26 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences exte
             'enable-emoji-completion': true,
         });
 
+        // export function colorButton(button, id, settings, actionRow) {
+        //     let resetColorButton = new Gtk.Button();
+        //     resetColorButton.set_label('Reset');
+        //     resetColorButton.connect('clicked', () => {
+        //         settings.set_string(id, '');
+        //         setButtonColor(button, id, settings);
+        //     });
+
+        //     actionRow.add_suffix(selectButtonColor(button, id, settings));
+        //     actionRow.add_suffix(resetColorButton);
+
+        //     return actionRow;
+        // }
+
         entryRow.set_text(window._settings.get_string('custom-text'));
         entryRow.connect('changed', entry => {
             window._settings.set_string('custom-text', entry.get_text());
         });
         entryRow.add_prefix(new Gtk.Label({label: 'Custom Text'}));
+        entryRow.add_suffix(clearTextButton(window._settings, 'custom-text', entryRow));
         group.add(entryRow);
 
         const labelColorRow = new Adw.ActionRow({
