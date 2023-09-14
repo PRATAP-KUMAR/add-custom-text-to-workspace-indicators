@@ -4,9 +4,9 @@ import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-import {setButtonColor, colorButton} from './helperFunctionsForPrefs.js';
+import {setButtonColor, colorButton} from './prefs/helperFunctions.js';
 
-export default class BringoutExtensionPreferences extends ExtensionPreferences {
+export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         window._settings = this.getSettings();
 
