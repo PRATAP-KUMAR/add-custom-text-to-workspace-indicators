@@ -64,10 +64,30 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
             return;
         }
         let customText = this._settings.get_string('custom-text');
-        if (customText === '')
+
+        switch (customText) {
+        case '':
             this._label.text = `${GLib.get_os_info('PRETTY_NAME')} | ${config.PACKAGE_NAME.toUpperCase()} ${config.PACKAGE_VERSION}`;
-        else
+            break;
+        case 'username':
+            this._label.text = GLib.get_user_name().toUpperCase();
+            break;
+        case 'hostname':
+            this._label.text = GLib.get_host_name().toUpperCase();
+            break;
+        case 'osname':
+            this._label.text = GLib.get_os_info('PRETTY_NAME');
+            break;
+        case 'kernel': {
+            const obj = GLib.spawn_command_line_sync('uname -r');
+            const kernelText = `Kernel Version ${obj[1].toString().trim()}`;
+            this._label.text = kernelText;
+            break;
+        }
+        default:
             this._label.text = customText;
+        }
+
         if (this._label)
             this._label.show();
     }

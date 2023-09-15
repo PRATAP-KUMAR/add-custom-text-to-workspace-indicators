@@ -39,19 +39,21 @@ export function colorButton(button, id, settings, actionRow) {
 
 /**
  *
- * @param {object} settings settings
+ * @param {string} label button label
  * @param {string} id schema_id
+ * @param {string} predefinedString 'command to get different names'
+ * @param {object} settings settings
  * @param {object} row entry row
  */
-export function clearTextButton(settings, id, row) {
-    let clearButton = new Gtk.Button();
-    clearButton.set_label('Clear Text');
-    clearButton.connect('clicked', () => {
-        settings.set_string(id, '');
+export function createGtkButton(label, id, predefinedString, settings, row) {
+    let gtkButton = new Gtk.Button();
+    gtkButton.set_label(label);
+    gtkButton.connect('clicked', () => {
+        settings.set_string(id, predefinedString);
         row.set_text(settings.get_string(id));
     });
 
-    return clearButton;
+    return gtkButton;
 }
 
 /**

@@ -4,7 +4,7 @@ import Gtk from 'gi://Gtk';
 
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-import {setButtonColor, colorButton, clearTextButton} from './prefs/helperFunctions.js';
+import {setButtonColor, colorButton, createGtkButton} from './prefs/helperFunctions.js';
 
 export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
@@ -18,23 +18,49 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences exte
         const page = new Adw.PreferencesPage();
         window.add(page);
 
-        const group = new Adw.PreferencesGroup();
-        page.add(group);
+        // System Indicators
+        const systemIndicatorsGroup = new Adw.PreferencesGroup({
+            title: 'System Workspace Indicators',
+        });
+        page.add(systemIndicatorsGroup);
 
         const workSpaceIndicatorsRow = new Adw.SwitchRow({
-            title: 'Hide Workspace Indicators',
+            title: 'Hide System Workspace Indicators',
         });
-        group.add(workSpaceIndicatorsRow);
+        systemIndicatorsGroup.add(workSpaceIndicatorsRow);
+        //
+
+        // Custom Indicators
+        const customIndicatorsGroup = new Adw.PreferencesGroup({
+            title: 'Custom Indicators',
+        });
+        page.add(customIndicatorsGroup);
 
         const showCustomIndicatorsRow = new Adw.SwitchRow({
             title: 'Show Custom Indictors',
         });
-        group.add(showCustomIndicatorsRow);
+        customIndicatorsGroup.add(showCustomIndicatorsRow);
+        const customIndicatorColorRow = new Adw.ActionRow({
+            title: 'Custom Indicator Color',
+        });
+        customIndicatorsGroup.add(colorButton(window._customIndicatorColorButton, 'custom-indicator-color', window._settings, customIndicatorColorRow));
+        //
+
+        // custom text group
+        const customTextGroup = new Adw.PreferencesGroup({
+            title: 'Custom Text',
+        });
+        page.add(customTextGroup);
 
         const showCustomTextRow = new Adw.SwitchRow({
             title: 'Show Custom Text',
         });
-        group.add(showCustomTextRow);
+        customTextGroup.add(showCustomTextRow);
+
+        const customTextColor = new Adw.ActionRow({
+            title: 'Custom Text Color',
+        });
+        customTextGroup.add(colorButton(window._labelColorButton, 'label-color', window._settings, customTextColor));
 
         const entryRow = new Adw.EntryRow({
             title: 'Enter your text or leave it blank for extensions default text',
@@ -45,18 +71,18 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences exte
             window._settings.set_string('custom-text', entry.get_text());
         });
         entryRow.add_prefix(new Gtk.Label({label: 'Custom Text'}));
-        entryRow.add_suffix(clearTextButton(window._settings, 'custom-text', entryRow));
-        group.add(entryRow);
+        entryRow.add_suffix(createGtkButton('Clear Text', 'custom-text', '', window._settings, entryRow));
+        customTextGroup.add(entryRow);
 
-        const labelColorRow = new Adw.ActionRow({
-            title: 'Custom Text Color',
+        const customTextsPredefinedRow = new Adw.ActionRow({
+            title: 'Predefined Texts',
         });
-        group.add(colorButton(window._labelColorButton, 'label-color', window._settings, labelColorRow));
-
-        const customIndicatorColorRow = new Adw.ActionRow({
-            title: 'Custom Indicator Color',
-        });
-        group.add(colorButton(window._customIndicatorColorButton, 'custom-indicator-color', window._settings, customIndicatorColorRow));
+        customTextsPredefinedRow.add_suffix(createGtkButton('User Name', 'custom-text', 'username', window._settings, entryRow));
+        customTextsPredefinedRow.add_suffix(createGtkButton('Host Name', 'custom-text', 'hostname', window._settings, entryRow));
+        customTextsPredefinedRow.add_suffix(createGtkButton('OS Name', 'custom-text', 'osname', window._settings, entryRow));
+        customTextsPredefinedRow.add_suffix(createGtkButton('Kernel Version', 'custom-text', 'kernel', window._settings, entryRow));
+        customTextGroup.add(customTextsPredefinedRow);
+        //
 
         window._settings.bind('hide-work-space-indicators', workSpaceIndicatorsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
         window._settings.bind('show-custom-text', showCustomTextRow, 'active', Gio.SettingsBindFlags.DEFAULT);
