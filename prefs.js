@@ -37,7 +37,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences exte
         page.add(customIndicatorsGroup);
 
         const showCustomIndicatorsRow = new Adw.SwitchRow({
-            title: 'Show Custom Indictors',
+            title: 'Show Custom Indicators',
         });
         customIndicatorsGroup.add(showCustomIndicatorsRow);
         const customIndicatorColorRow = new Adw.ActionRow({
