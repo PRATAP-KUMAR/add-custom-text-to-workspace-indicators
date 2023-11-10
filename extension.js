@@ -5,26 +5,58 @@ import Clutter from 'gi://Clutter';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as config from 'resource:///org/gnome/shell/misc/config.js';
-import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
+import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';
+
+let labelObj = null;
 
 export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extension {
+    constructor(metadata) {
+        super(metadata);
+        this._injectionManager = new InjectionManager();
+    }
+
     enable() {
+        labelObj = {
+            text: '',
+            y_align: Clutter.ActorAlign.CENTER,
+        };
+
         this._settings = this.getSettings();
         this._workspaces_settings = new Gio.Settings({schema: 'org.gnome.desktop.wm.preferences'});
 
-        this._workSpaceIndicators = Main.panel.statusArea.activities.get_child_at_index(0);
+        this._workSpaceIndicators = Main.panel.statusArea.activities.get_first_child();
 
-        this._customLabel = new St.Label({
-            text: '',
-            y_align: Clutter.ActorAlign.CENTER,
-        });
+        this._customLabel = new St.Label(labelObj);
         this._workSpaceIndicators.add_child(this._customLabel);
 
-        this._customIndicator = new St.Label({
-            text: '',
-            y_align: Clutter.ActorAlign.CENTER,
-        });
+        this._customIndicator = new St.Label(labelObj);
         this._workSpaceIndicators.add_child(this._customIndicator);
+
+        // override recalculateDots function
+        this._injectionManager.overrideMethod(this._workSpaceIndicators, '_recalculateDots',
+            originalMethod => {
+                const extension = this;
+                const settings = this.getSettings();
+                return function () {
+                    const shallHidePills = settings.get_boolean('hide-system-workspace-indicators');
+                    if (shallHidePills) {
+                        originalMethod.call(this);
+                    } else {
+                        this.remove_child(extension._customIndicator);
+                        this.remove_child(extension._customLabel);
+
+                        originalMethod.call(this);
+
+                        this.add_child(extension._customLabel);
+                        this.add_child(extension._customIndicator);
+
+                        const dotsColor = settings.get_string('dots-color');
+                        extension._setDotsStyle(dotsColor);
+                    }
+                };
+            }
+        );
+        //
 
         this._setCustomLabel();
         this._setCustomIndicator();
@@ -34,6 +66,8 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
     }
 
     disable() {
+        labelObj = null;
+
         this._workSpaceIndicators.remove_child(this._customIndicator);
         this._workSpaceIndicators.remove_child(this._customLabel);
 
@@ -45,33 +79,9 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         this._settings = null;
     }
 
-    _recalculateDots() {
+    _removeChildren() {
         this._workSpaceIndicators.remove_child(this._customIndicator);
         this._workSpaceIndicators.remove_child(this._customLabel);
-
-        this._sourceId = GLib.timeout_add(
-            GLib.PRIORITY_DEFAULT,
-            300,
-            () => {
-                this._systemIndicatorsSettingsChanged();
-
-                this._workSpaceIndicators.add_child(this._customLabel);
-                const shouldShowCustomText = this._settings.get_boolean('show-custom-text');
-                if (!shouldShowCustomText) {
-                    if (this._customLabel)
-                        this._customLabel.hide();
-                }
-
-                this._workSpaceIndicators.add_child(this._customIndicator);
-                const shouldShowCustomIndicator = this._settings.get_boolean('show-custom-indicators');
-                if (!shouldShowCustomIndicator) {
-                    if (this._customIndicator)
-                        this._customIndicator.hide();
-                }
-
-                return GLib.SOURCE_CONTINUE;
-            }
-        );
     }
 
     _systemIndicatorsSettingsChanged() {
@@ -79,8 +89,8 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         this._showHide(shouldHide);
     }
 
-    _showHide(shouldHide = false) {
-        const dots = this._workSpaceIndicators.get_children().filter(e => 'width-multiplier' in e);
+    async _showHide(shouldHide = false) {
+        const dots = await this._workSpaceIndicators.get_children().filter(e => 'width-multiplier' in e);
         dots.forEach(dot => {
             if (shouldHide)
                 dot.hide();
@@ -102,7 +112,6 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
 
         this._activeWsChangedId = global.workspace_manager.connect('active-workspace-changed', this._onWsChanges.bind(this));
         this._wSNumberChangedId = global.workspace_manager.connect('notify::n-workspaces', this._onWsChanges.bind(this));
-        this._wsAddedId = global.workspace_manager.connect('workspace-added', this._recalculateDots.bind(this));
     }
 
     _setCustomLabel() {
@@ -112,8 +121,8 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
                 this._customLabel.hide();
             return;
         }
-        let customText = this._settings.get_string('custom-text');
 
+        let customText = this._settings.get_string('custom-text');
         switch (customText) {
         case '':
             this._customLabel.text = `${GLib.get_os_info('PRETTY_NAME')} | ${config.PACKAGE_NAME.toUpperCase()} ${config.PACKAGE_VERSION}`;
@@ -160,7 +169,6 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         const index = global.workspaceManager.get_active_workspace().workspace_index;
         const nWorkspaces = global.workspaceManager.get_n_workspaces();
         this._customIndicator.text = workspaceNames[index] ? `${workspaceNames[index]}` : `ws${index + 1} / ${nWorkspaces}`;
-        this._onColorChange();
     }
 
     _onColorChange() {
@@ -168,13 +176,13 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         let customIndicatorColor = this._settings.get_string('custom-indicator-color');
         let dotsColor = this._settings.get_string('dots-color');
 
-        if (labelColor !== '')
+        if (labelColor)
             this._customLabel.set_style(`color: ${labelColor}`);
 
-        if (customIndicatorColor !== '')
+        if (customIndicatorColor)
             this._customIndicator.set_style(`color: ${customIndicatorColor}`);
 
-        if (dotsColor !== '')
+        if (dotsColor)
             this._setDotsStyle(dotsColor);
     }
 
@@ -186,6 +194,8 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
     }
 
     _destroy() {
+        this._injectionManager.clear(); // clear override method
+
         this._showHide(); // show system workspace indicators
         this._setDotsStyle(); // null the background-color of system workspace indicators
 
