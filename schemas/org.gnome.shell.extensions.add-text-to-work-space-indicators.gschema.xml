@@ -1,7 +1,7 @@
 <schemalist>
     <schema id="org.gnome.shell.extensions.add-text-to-work-space-indicators" path="/org/gnome/shell/extensions/add-text-to-work-space-indicators/">
 
-        <key name="hide-system-workspace-indicators" type="b">
+        <key name="hide-system-workspace-pills" type="b">
             <default>false</default>
             <summary>hide indicators</summary>
             <description>Description</description>
@@ -13,9 +13,9 @@
             <description>Description</description>
         </key>
 
-        <key name="show-custom-indicators" type="b">
+        <key name="show-custom-indicator" type="b">
             <default>true</default>
-            <summary>show/hide custom indicators</summary>
+            <summary>show/hide custom indicator</summary>
             <description>Description</description>
         </key>
 

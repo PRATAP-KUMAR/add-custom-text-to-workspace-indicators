@@ -38,7 +38,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
                 const extension = this;
                 const settings = this.getSettings();
                 return function () {
-                    const shallHidePills = settings.get_boolean('hide-system-workspace-indicators');
+                    const shallHidePills = settings.get_boolean('hide-system-workspace-pills');
                     if (shallHidePills) {
                         originalMethod.call(this);
                     } else {
@@ -85,7 +85,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
     }
 
     _systemIndicatorsSettingsChanged() {
-        let shouldHide = this._settings.get_boolean('hide-system-workspace-indicators');
+        let shouldHide = this._settings.get_boolean('hide-system-workspace-pills');
         this._showHide(shouldHide);
     }
 
@@ -100,10 +100,10 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
     }
 
     _connectSettings() {
-        this._hideSystemWorkspacesIndicatorsId = this._settings.connect('changed::hide-system-workspace-indicators', this._systemIndicatorsSettingsChanged.bind(this));
+        this._hideSystemWorkspacesIndicatorsId = this._settings.connect('changed::hide-system-workspace-pills', this._systemIndicatorsSettingsChanged.bind(this));
         this._customTextId = this._settings.connect('changed::custom-text', this._setCustomLabel.bind(this));
         this._showCustomTextId = this._settings.connect('changed::show-custom-text', this._setCustomLabel.bind(this));
-        this._showCustomIndicatorsId = this._settings.connect('changed::show-custom-indicators', this._setCustomIndicator.bind(this));
+        this._showCustomIndicatorsId = this._settings.connect('changed::show-custom-indicator', this._setCustomIndicator.bind(this));
         this._onSystemIndicatorColorChangedId = this._settings.connect('changed::dots-color', this._onColorChange.bind(this));
         this._onLabelColorChangedId = this._settings.connect('changed::label-color', this._onColorChange.bind(this));
         this._onCustomIndicatorColorChangedId = this._settings.connect('changed::custom-indicator-color', this._onColorChange.bind(this));
@@ -151,7 +151,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
     }
 
     _setCustomIndicator() {
-        const shouldShowCustomIndicator = this._settings.get_boolean('show-custom-indicators');
+        const shouldShowCustomIndicator = this._settings.get_boolean('show-custom-indicator');
         if (!shouldShowCustomIndicator) {
             if (this._customIndicator)
                 this._customIndicator.hide();

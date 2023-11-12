@@ -92,8 +92,8 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences exte
         customIndicatorsGroup.add(colorButton(window._customIndicatorColorButton, 'custom-indicator-color', window._settings, customIndicatorColorRow));
         //
 
-        window._settings.bind('hide-system-workspace-indicators', workSpaceIndicatorsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        window._settings.bind('hide-system-workspace-pills', workSpaceIndicatorsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
         window._settings.bind('show-custom-text', showCustomTextRow, 'active', Gio.SettingsBindFlags.DEFAULT);
-        window._settings.bind('show-custom-indicators', showCustomIndicatorsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        window._settings.bind('show-custom-indicator', showCustomIndicatorsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
     }
 }
