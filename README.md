@@ -18,4 +18,22 @@ Add custom text to newly introduced workspace indicators - GNOME v45
 from extensions.gnome.org <a href="https://extensions.gnome.org/extension/6272/add-custom-text-to-workspace-indicators/">Official</a>
 
 ### Option 2
-from extensions.gnome.org <a href="">Under review</a>
+from extensions.gnome.org <a href="https://extensions.gnome.org/review/download/48159.shell-extension.zip">Under review</a>
+
+Once downloaded, from the root directory of downloads, run the below command to install the extension
+```
+gnome-extensions install -f AddCustomTextToWorkSpaceIndicatorspratap.fastmail.fm.v10.shell-extension.zip
+```
+Enable the extension and customize
+
+## About Brand Logo
+By default you see an error image in place of logo.
+
+The GNOME logo you see in the image has not shipped with the extension.
+You have to keep an svg icon with the name **brand-logo-symbolic.svg** in your `.icons` folder of home directory.
+When you add the icon for the first time, you need to restart the shell or logout and login to see the change.
+
+<hr/>
+
+<a href="https://www.buymeacoffee.com/pratappanabaka"><img src="https://img.buymeacoffee.com/button-api/?text=Wish to BuyMeACoffee ?&emoji=☕&slug=pratappanabaka&button_colour=40DCA5&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00" /></a>
+
