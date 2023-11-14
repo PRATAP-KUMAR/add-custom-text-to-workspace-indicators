@@ -10,13 +10,15 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences exte
     fillPreferencesWindow(window) {
         window._settings = this.getSettings();
 
+        window._pillsColorButton = new Gtk.ColorButton();
+        window._logoColorButton = new Gtk.ColorButton();
         window._labelColorButton = new Gtk.ColorButton();
-        window._systemWorkspaceIndicatorsColorButton = new Gtk.ColorButton();
-        window._customIndicatorColorButton = new Gtk.ColorButton();
+        window._indicatorColorButton = new Gtk.ColorButton();
 
-        setButtonColor(window._systemWorkspaceIndicatorsColorButton, 'dots-color', window._settings);
+        setButtonColor(window._pillsColorButton, 'pills-color', window._settings);
+        setButtonColor(window._logoColorButton, 'logo-color', window._settings);
         setButtonColor(window._labelColorButton, 'label-color', window._settings);
-        setButtonColor(window._customIndicatorColorButton, 'custom-indicator-color', window._settings);
+        setButtonColor(window._indicatorColorButton, 'indicator-color', window._settings);
 
         const page = new Adw.PreferencesPage();
         window.add(page);
@@ -35,7 +37,24 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences exte
         const systemIndicatorColorRow = new Adw.ActionRow({
             title: 'System Indicator Color',
         });
-        systemIndicatorsGroup.add(colorButton(window._systemWorkspaceIndicatorsColorButton, 'dots-color', window._settings, systemIndicatorColorRow));
+        systemIndicatorsGroup.add(colorButton(window._pillsColorButton, 'pills-color', window._settings, systemIndicatorColorRow));
+        //
+
+        // Logo
+        const logoGroup = new Adw.PreferencesGroup({
+            title: 'Loog',
+        });
+        page.add(logoGroup);
+
+        const showLogoRow = new Adw.SwitchRow({
+            title: 'Show Logo',
+        });
+        logoGroup.add(showLogoRow);
+
+        const logoColor = new Adw.ActionRow({
+            title: 'Logo Color',
+        });
+        logoGroup.add(colorButton(window._logoColorButton, 'logo-color', window._settings, logoColor));
         //
 
         // custom text group
@@ -89,10 +108,11 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences exte
         const customIndicatorColorRow = new Adw.ActionRow({
             title: 'Custom Indicator Color',
         });
-        customIndicatorsGroup.add(colorButton(window._customIndicatorColorButton, 'custom-indicator-color', window._settings, customIndicatorColorRow));
+        customIndicatorsGroup.add(colorButton(window._indicatorColorButton, 'indicator-color', window._settings, customIndicatorColorRow));
         //
 
-        window._settings.bind('hide-system-workspace-pills', workSpaceIndicatorsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        window._settings.bind('hide-pills', workSpaceIndicatorsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
+        window._settings.bind('show-logo', showLogoRow, 'active', Gio.SettingsBindFlags.DEFAULT);
         window._settings.bind('show-custom-text', showCustomTextRow, 'active', Gio.SettingsBindFlags.DEFAULT);
         window._settings.bind('show-custom-indicator', showCustomIndicatorsRow, 'active', Gio.SettingsBindFlags.DEFAULT);
     }

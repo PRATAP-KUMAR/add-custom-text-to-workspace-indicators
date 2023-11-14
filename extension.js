@@ -7,7 +7,9 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as config from 'resource:///org/gnome/shell/misc/config.js';
 import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';
 
+let iconObj = null;
 let labelObj = null;
+let connectionSettingsArray = null;
 
 export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extension {
     constructor(metadata) {
@@ -16,6 +18,12 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
     }
 
     enable() {
+        iconObj = {
+            icon_name: 'brand-logo-symbolic',
+            icon_size: Main.panel.height,
+            y_align: Clutter.ActorAlign.CENTER,
+        };
+
         labelObj = {
             text: '',
             y_align: Clutter.ActorAlign.CENTER,
@@ -25,6 +33,9 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         this._workspaces_settings = new Gio.Settings({schema: 'org.gnome.desktop.wm.preferences'});
 
         this._workSpaceIndicators = Main.panel.statusArea.activities.get_first_child();
+
+        this._customLogo = new St.Icon(iconObj);
+        this._workSpaceIndicators.add_child(this._customLogo);
 
         this._customLabel = new St.Label(labelObj);
         this._workSpaceIndicators.add_child(this._customLabel);
@@ -38,59 +49,74 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
                 const extension = this;
                 const settings = this.getSettings();
                 return function () {
-                    const shallHidePills = settings.get_boolean('hide-system-workspace-pills');
-                    if (shallHidePills) {
-                        originalMethod.call(this);
-                    } else {
-                        this.remove_child(extension._customIndicator);
-                        this.remove_child(extension._customLabel);
+                    this.remove_child(extension._customIndicator);
+                    this.remove_child(extension._customLabel);
+                    this.remove_child(extension._customLogo);
 
-                        originalMethod.call(this);
+                    originalMethod.call(this);
 
-                        this.add_child(extension._customLabel);
-                        this.add_child(extension._customIndicator);
+                    let pills = this.get_children();
+                    pills.forEach(pill => {
+                        let pillsColor = settings.get_string('pills-color');
+                        pill._dot.set_style(`background-color: ${pillsColor}`);
 
-                        const dotsColor = settings.get_string('dots-color');
-                        extension._setDotsStyle(dotsColor);
-                    }
+                        let shouldHide = extension._settings.get_boolean('hide-pills');
+                        if (shouldHide) {
+                            if (pill.visible)
+                                pill.hide();
+                        } else if (!pill.visible) {
+                            pill.show();
+                        }
+                    });
+
+                    this.add_child(extension._customLogo);
+                    this.add_child(extension._customLabel);
+                    this.add_child(extension._customIndicator);
                 };
-            }
-        );
+            });
         //
 
         this._setCustomLabel();
         this._setCustomIndicator();
         this._connectSettings();
-        this._systemIndicatorsSettingsChanged();
+        this._pillsVisibilityChanged();
         this._onColorChange();
     }
 
     disable() {
+        iconObj = null;
         labelObj = null;
 
-        this._workSpaceIndicators.remove_child(this._customIndicator);
-        this._workSpaceIndicators.remove_child(this._customLabel);
+        this._removeChildren();
 
-        this._destroy();
+        let pills = this._workSpaceIndicators.get_children();
+        pills.forEach(pill => {
+            pill.show();
+            pill._dot.set_style('background-color: null');
+        });
+
+        this._destroyAllConnections();
 
         this._customIndicator = null;
         this._customLabel = null;
+        this._customLogo = null;
+
         this._workspaces_settings = null;
         this._settings = null;
+
+        this._injectionManager.clear(); // clear override method
     }
 
     _removeChildren() {
         this._workSpaceIndicators.remove_child(this._customIndicator);
         this._workSpaceIndicators.remove_child(this._customLabel);
+        this._workSpaceIndicators.remove_child(this._customLogo);
     }
 
-    _systemIndicatorsSettingsChanged() {
-        let shouldHide = this._settings.get_boolean('hide-system-workspace-pills');
-        this._showHide(shouldHide);
-    }
-
-    async _showHide(shouldHide = false) {
+    async _pillsVisibilityChanged() {
+        let shouldHide = this._settings.get_boolean('hide-pills');
         const dots = await this._workSpaceIndicators.get_children().filter(e => 'width-multiplier' in e);
+
         dots.forEach(dot => {
             if (shouldHide)
                 dot.hide();
@@ -100,18 +126,51 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
     }
 
     _connectSettings() {
-        this._hideSystemWorkspacesIndicatorsId = this._settings.connect('changed::hide-system-workspace-pills', this._systemIndicatorsSettingsChanged.bind(this));
-        this._customTextId = this._settings.connect('changed::custom-text', this._setCustomLabel.bind(this));
+        connectionSettingsArray = [];
+
+        this._pillsVisibilityId = this._settings.connect('changed::hide-pills', this._pillsVisibilityChanged.bind(this));
+        connectionSettingsArray.push(this._pillsVisibilityId);
+
+        this._showLogoId = this._settings.connect('changed::show-logo', this._setLogo.bind(this));
+        connectionSettingsArray.push(this._showLogoId);
+
         this._showCustomTextId = this._settings.connect('changed::show-custom-text', this._setCustomLabel.bind(this));
+        connectionSettingsArray.push(this._showCustomTextId);
+
         this._showCustomIndicatorsId = this._settings.connect('changed::show-custom-indicator', this._setCustomIndicator.bind(this));
-        this._onSystemIndicatorColorChangedId = this._settings.connect('changed::dots-color', this._onColorChange.bind(this));
+        connectionSettingsArray.push(this._showCustomIndicatorsId);
+
+        this._customTextId = this._settings.connect('changed::custom-text', this._setCustomLabel.bind(this));
+        connectionSettingsArray.push(this._customTextId);
+
+        this._onPillsColorChangedId = this._settings.connect('changed::pills-color', this._onColorChange.bind(this));
+        connectionSettingsArray.push(this._onPillsColorChangedId);
+
+        this._onLogoColorChangedId = this._settings.connect('changed::logo-color', this._onColorChange.bind(this));
+        connectionSettingsArray.push(this._onLogoColorChangedId);
+
         this._onLabelColorChangedId = this._settings.connect('changed::label-color', this._onColorChange.bind(this));
-        this._onCustomIndicatorColorChangedId = this._settings.connect('changed::custom-indicator-color', this._onColorChange.bind(this));
+        connectionSettingsArray.push(this._onLabelColorChangedId);
 
-        this._workspaceNamesChangedId = this._workspaces_settings.connect('changed::workspace-names', this._onWsChanges.bind(this));
+        this._onCustomIndicatorColorChangedId = this._settings.connect('changed::indicator-color', this._onColorChange.bind(this));
+        connectionSettingsArray.push(this._onCustomIndicatorColorChangedId);
 
-        this._activeWsChangedId = global.workspace_manager.connect('active-workspace-changed', this._onWsChanges.bind(this));
-        this._wSNumberChangedId = global.workspace_manager.connect('notify::n-workspaces', this._onWsChanges.bind(this));
+        this._workspaceNamesChangedId = this._workspaces_settings.connect('changed::workspace-names', this._onWorkspaceChanged.bind(this));
+
+        this._activeWsChangedId = global.workspace_manager.connect('active-workspace-changed', this._onWorkspaceChanged.bind(this));
+        this._wSNumberChangedId = global.workspace_manager.connect('notify::n-workspaces', this._onWorkspaceChanged.bind(this));
+    }
+
+    _setLogo() {
+        const shouldShowLogo = this._settings.get_boolean('show-logo');
+        if (!shouldShowLogo) {
+            if (this._customLogo)
+                this._customLogo.hide();
+            return;
+        }
+
+        if (this._customLogo)
+            this._customLogo.show();
     }
 
     _setCustomLabel() {
@@ -151,12 +210,6 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
             this._customLabel.show();
     }
 
-
-
-
-
-
-
     _setCustomIndicator() {
         const shouldShowCustomIndicator = this._settings.get_boolean('show-custom-indicator');
         if (!shouldShowCustomIndicator) {
@@ -165,13 +218,13 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
             return;
         }
 
-        this._onWsChanges();
+        this._onWorkspaceChanged();
 
         if (this._customIndicator)
             this._customIndicator.show();
     }
 
-    _onWsChanges() {
+    _onWorkspaceChanged() {
         const workspaceNames = this._workspaces_settings.get_strv('workspace-names');
         const index = global.workspaceManager.get_active_workspace().workspace_index;
         const nWorkspaces = global.workspaceManager.get_n_workspaces();
@@ -179,54 +232,36 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
     }
 
     _onColorChange() {
+        let pillsColor = this._settings.get_string('pills-color');
+        let logoColor = this._settings.get_string('logo-color');
         let labelColor = this._settings.get_string('label-color');
-        let customIndicatorColor = this._settings.get_string('custom-indicator-color');
-        let dotsColor = this._settings.get_string('dots-color');
+        let indicatorColor = this._settings.get_string('indicator-color');
 
-        if (labelColor)
-            this._customLabel.set_style(`color: ${labelColor}`);
+        this._customLogo.set_style(`color: ${logoColor}`);
 
-        if (customIndicatorColor)
-            this._customIndicator.set_style(`color: ${customIndicatorColor}`);
+        this._setPillsColor(pillsColor);
 
-        if (dotsColor)
-            this._setDotsStyle(dotsColor);
+        this._customLabel.set_style(`color: ${labelColor}`);
+
+        this._customIndicator.set_style(`color: ${indicatorColor}`);
     }
 
-    _setDotsStyle(color = null) {
-        const dots = this._workSpaceIndicators.get_children().filter(e => 'width-multiplier' in e);
+    async _setPillsColor(color) {
+        const dots = await this._workSpaceIndicators.get_children().filter(e => 'width-multiplier' in e);
         dots.forEach(dot => {
             dot._dot.set_style(`background-color: ${color}`);
         });
     }
 
-    _destroy() {
-        this._injectionManager.clear(); // clear override method
-
-        this._showHide(); // show system workspace indicators
-        this._setDotsStyle(); // null the background-color of system workspace indicators
-
-        if (this._sourceId) {
-            GLib.Source.remove(this._sourceId);
-            this._sourceId = null;
-        }
-
-        const settingsIds = [
-            this._hideSystemWorkspacesIndicatorsId,
-            this._customTextId,
-            this._showCustomTextId,
-            this._showCustomIndicatorsId,
-            this._onSystemIndicatorColorChangedId,
-            this._onLabelColorChangedId,
-            this._onCustomIndicatorColorChangedId,
-        ];
-
-        settingsIds.forEach(id => {
+    _destroyAllConnections() {
+        connectionSettingsArray.forEach(id => {
             if (id) {
                 this._settings.disconnect(id);
                 id = null;
             }
         });
+
+        connectionSettingsArray = null;
 
         if (this._workspaceNamesChangedId) {
             this._workspaces_settings.disconnect(this._workspaceNamesChangedId);
@@ -236,7 +271,6 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         const workspaceManagerIds = [
             this._activeWsChangedId,
             this._wSNumberChangedId,
-            this._wsAddedId,
         ];
 
         workspaceManagerIds.forEach(id => {
