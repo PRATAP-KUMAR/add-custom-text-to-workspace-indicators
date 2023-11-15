@@ -19,7 +19,7 @@ from extensions.gnome.org <a href="https://extensions.gnome.org/extension/6272/a
 
 ### Option 2
 Install latest version from github
-1. Clone the repo `git clone https://github.com/PRATAP-KUMAR/add-custom-text-to-workspace-indicators.git`
+1. `git clone https://github.com/PRATAP-KUMAR/add-custom-text-to-workspace-indicators.git`
 2. `cd`
 3. `make`
 4. `make install`
