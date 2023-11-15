@@ -1,14 +1,15 @@
 {
-  "description": "Add custom text to workspace indicators",
-  "name": "Add Custom Text to Workspace Indicators",
-  "settings-schema": "org.gnome.shell.extensions.add-text-to-work-space-indicators",
-  "shell-version": [
-    "45"
-  ],
-  "url": "https://github.com/PRATAP-KUMAR/AddCustomTextToWorkSpaceIndicators",
-  "uuid": "AddCustomTextToWorkSpaceIndicators@pratap.fastmail.fm",
-  "donations": {
-    "buymeacoffee": "pratappanabaka",
-    "paypal": "pratappanabaka"
-  }
+    "description": "Add custom text to workspace indicators",
+    "name": "Add Custom Text to Workspace Indicators",
+    "settings-schema": "org.gnome.shell.extensions.add-custom-text-to-workspace-indicators",
+    "shell-version": [
+        "45"
+    ],
+    "url": "https://github.com/PRATAP-KUMAR/AddCustomTextToWorkSpaceIndicators",
+    "uuid": "add-custom-text-to-workspace-indicators@pratap.fastmail.fm",
+    "version": 8,
+    "donations": {
+        "buymeacoffee": "pratappanabaka",
+        "paypal": "pratappanabaka"
+    }
 }

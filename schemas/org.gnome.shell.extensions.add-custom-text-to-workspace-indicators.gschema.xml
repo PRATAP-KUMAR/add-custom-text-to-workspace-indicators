@@ -1,5 +1,5 @@
 <schemalist>
-    <schema id="org.gnome.shell.extensions.add-text-to-work-space-indicators" path="/org/gnome/shell/extensions/add-text-to-work-space-indicators/">
+    <schema id="org.gnome.shell.extensions.add-custom-text-to-workspace-indicators" path="/org/gnome/shell/extensions/add-custom-text-to-workspace-indicators/">
 
         <key name="hide-pills" type="b">
             <default>false</default>
