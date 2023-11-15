@@ -7,10 +7,8 @@ ZIP_NAME := $(NAME)@$(DOMAIN).zip
 
 # Some of the recipes below depend on some of these files.
 JS_FILES       = $(shell find -type f -and \( -name "*.js" \))
-ICONS          = $(shell find -maxdepth 1 -type f -and \( -name "*.svg" \))
+ICONS          = $(shell find -maxdepth 2 -type f -and \( -name "*.svg" \))
 UI_FILES       = $(shell find -type f -and \( -name "*.ui" \))
-LOCALES_PO     = $(wildcard po/*.po)
-LOCALES_MO     = $(patsubst po/%.po,locale/%/LC_MESSAGES/$(NAME).mo,$(LOCALES_PO))
 
 # These files will be included in the extension zip file.
 ZIP_CONTENT = $(JS_FILES) $(ICONS) $(LOCALES_MO) \
