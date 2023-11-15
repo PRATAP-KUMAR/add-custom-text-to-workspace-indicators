@@ -27,7 +27,7 @@ Install latest version from github
 ## About Brand Logo
 By default you see an error image in place of logo.
 
-The GNOME logo you see in the image has not shipped with the extension.
+The GNOME logo you see in the image is in the extensions `icons` folder.
 You have to keep an svg icon of your choice with the name **brand-logo-symbolic.svg** in your `.icons` folder of home directory.
 When you add the icon for the first time, you need to restart the shell or logout and login to see the change.
 
