@@ -1,9 +1,9 @@
 <schemalist>
-    <schema id="org.gnome.shell.extensions.add-text-to-work-space-indicators" path="/org/gnome/shell/extensions/add-text-to-work-space-indicators/">
+    <schema id="org.gnome.shell.extensions.add-custom-text-to-workspace-indicators" path="/org/gnome/shell/extensions/add-custom-text-to-workspace-indicators/">
 
         <key name="hide-pills" type="b">
-            <default>false</default>
-            <summary>hide indicators</summary>
+            <default>true</default>
+            <summary>hide pills</summary>
             <description>Description</description>
         </key>
 
@@ -31,6 +31,12 @@
             <description>Description</description>
         </key>
 
+        <key name="pills-color" type="s">
+            <default>''</default>
+            <summary>Pills Color</summary>
+            <description>Description</description>
+        </key>
+
         <key name="logo-color" type="s">
             <default>''</default>
             <summary>Logo Color</summary>
@@ -48,12 +54,6 @@
             <summary>Custom Indicator Color</summary>
             <description>Description</description>
         </key>
-
-        <key name="pills-color" type="s">
-            <default>''</default>
-            <summary>Pills Color</summary>
-            <description>Description</description>
-        </key>
-
+        
     </schema>
 </schemalist>

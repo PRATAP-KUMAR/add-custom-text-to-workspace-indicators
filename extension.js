@@ -12,12 +12,9 @@ let labelObj = null;
 let connectionSettingsArray = null;
 
 export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extension {
-    constructor(metadata) {
-        super(metadata);
-        this._injectionManager = new InjectionManager();
-    }
-
     enable() {
+        this._injectionManager = new InjectionManager();
+
         iconObj = {
             icon_name: 'brand-logo-symbolic',
             icon_size: Main.panel.height,
@@ -104,6 +101,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         this._settings = null;
 
         this._injectionManager.clear(); // clear override method
+        this._injectionManager = null;
     }
 
     _removeChildren() {

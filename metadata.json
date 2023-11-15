@@ -1,7 +1,7 @@
 {
   "description": "Add custom text to workspace indicators",
   "name": "Add Custom Text to Workspace Indicators",
-  "settings-schema": "org.gnome.shell.extensions.add-text-to-work-space-indicators",
+  "settings-schema": "org.gnome.shell.extensions.add-custom-text-to-workspace-indicators",
   "shell-version": [
     "45"
   ],
