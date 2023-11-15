@@ -30,8 +30,10 @@ Enable the extension and customize
 By default you see an error image in place of logo.
 
 The GNOME logo you see in the image has not shipped with the extension.
-You have to keep an svg icon with the name **brand-logo-symbolic.svg** in your `.icons` folder of home directory.
+You have to keep an svg icon of your choice with the name **brand-logo-symbolic.svg** in your `.icons` folder of home directory.
 When you add the icon for the first time, you need to restart the shell or logout and login to see the change.
+
+![image](https://github.com/PRATAP-KUMAR/AddCustomTextToWorkSpaceIndicators/assets/40719899/582388c5-6d1e-41bb-a064-1a80b9271508)
 
 <hr/>
 
