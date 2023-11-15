@@ -90,7 +90,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
 
         let pills = this._workSpaceIndicators.get_children();
         pills.forEach(pill => {
-            pill.show();
+            pill.show(); // show pills
             pill._dot.set_style('background-color: null'); // remove custom color;
         });
 
@@ -248,7 +248,6 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         const nWorkspaces = global.workspaceManager.get_n_workspaces();
         this._customIndicator.text = workspaceNames[index] ? `${workspaceNames[index]}` : `ws${index + 1} / ${nWorkspaces}`;
     }
-
 
     _onLogoColorChange() {
         let logoColor = this._settings.get_string('logo-color');
