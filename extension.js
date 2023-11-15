@@ -43,35 +43,29 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         this._customIndicator = new St.Label(labelObj);
         this._workSpaceIndicators.add_child(this._customIndicator);
 
-        // override recalculateDots function
+        // override recalculateDots method
         this._injectionManager.overrideMethod(this._workSpaceIndicators, '_recalculateDots',
             originalMethod => {
                 const extension = this;
-                const settings = this.getSettings();
                 return function () {
-                    this.remove_child(extension._customIndicator);
-                    this.remove_child(extension._customLabel);
-                    this.remove_child(extension._customLogo);
+                    extension._removeChildren(); // remove custom widgets
 
-                    originalMethod.call(this);
+                    originalMethod.call(extension._workSpaceIndicators); // call original _recalculateDots method
 
-                    let pills = this.get_children();
-                    pills.forEach(pill => {
-                        let pillsColor = settings.get_string('pills-color');
-                        pill._dot.set_style(`background-color: ${pillsColor}`);
+                    let pills = extension._workSpaceIndicators.get_children();
+                    extension._applyColor(pills); // apply color to newly added pill if workspace added based on gsettings
+                    extension._applyVisibility(pills); // hide newly added pill if workspace added based on gsettings
 
-                        let shouldHide = extension._settings.get_boolean('hide-pills');
-                        if (shouldHide) {
-                            if (pill.visible)
-                                pill.hide();
-                        } else if (!pill.visible) {
-                            pill.show();
-                        }
-                    });
+                    // add custom widgets back after calling original _relcalculateDots method
+                    // then call respective methods for visibility (show or hideI)
+                    extension._workSpaceIndicators.add_child(extension._customLogo);
+                    extension._setLogo();
 
-                    this.add_child(extension._customLogo);
-                    this.add_child(extension._customLabel);
-                    this.add_child(extension._customIndicator);
+                    extension._workSpaceIndicators.add_child(extension._customLabel);
+                    extension._setLabel();
+
+                    extension._workSpaceIndicators.add_child(extension._customIndicator);
+                    extension._setCustomIndicator();
                 };
             });
         //
@@ -79,8 +73,13 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         this._setCustomLabel();
         this._setCustomIndicator();
         this._connectSettings();
-        this._pillsVisibilityChanged();
-        this._onColorChange();
+        this._pillsVisibilityChange();
+
+        // on color change
+        this._onPillsColorChange();
+        this._onLogoColorChange();
+        this._onLabelColorChange();
+        this._onIndicatorColorChange();
     }
 
     disable() {
@@ -92,7 +91,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         let pills = this._workSpaceIndicators.get_children();
         pills.forEach(pill => {
             pill.show();
-            pill._dot.set_style('background-color: null');
+            pill._dot.set_style('background-color: null'); // remove custom color;
         });
 
         this._destroyAllConnections();
@@ -113,28 +112,43 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         this._workSpaceIndicators.remove_child(this._customLogo);
     }
 
-    async _pillsVisibilityChanged() {
-        let shouldHide = this._settings.get_boolean('hide-pills');
-        const dots = await this._workSpaceIndicators.get_children().filter(e => 'width-multiplier' in e);
-
-        dots.forEach(dot => {
-            if (shouldHide)
-                dot.hide();
-            else
-                dot.show();
+    _applyColor(pills) {
+        let pillsColor = this._settings.get_string('pills-color');
+        pills.forEach(pill => {
+            pill._dot.set_style(`background-color: ${pillsColor}`);
         });
+    }
+
+    _applyVisibility(pills) {
+        let shouldHide = this._settings.get_boolean('hide-pills');
+        pills.forEach(pill => {
+            if (shouldHide)
+                pill.hide();
+            else
+                pill.show();
+        });
+    }
+
+    async _pillsVisibilityChange() {
+        const pills = await this._workSpaceIndicators.get_children().filter(e => 'width-multiplier' in e);
+        this._applyVisibility(pills);
+    }
+
+    async _onPillsColorChange() {
+        let pills = await this._workSpaceIndicators.get_children().filter(e => 'width-multiplier' in e);
+        this._applyColor(pills);
     }
 
     _connectSettings() {
         connectionSettingsArray = [];
 
-        this._pillsVisibilityId = this._settings.connect('changed::hide-pills', this._pillsVisibilityChanged.bind(this));
+        this._pillsVisibilityId = this._settings.connect('changed::hide-pills', this._pillsVisibilityChange.bind(this)); // async
         connectionSettingsArray.push(this._pillsVisibilityId);
 
         this._showLogoId = this._settings.connect('changed::show-logo', this._setLogo.bind(this));
         connectionSettingsArray.push(this._showLogoId);
 
-        this._showCustomTextId = this._settings.connect('changed::show-custom-text', this._setCustomLabel.bind(this));
+        this._showCustomTextId = this._settings.connect('changed::show-custom-text', this._setLabel.bind(this));
         connectionSettingsArray.push(this._showCustomTextId);
 
         this._showCustomIndicatorsId = this._settings.connect('changed::show-custom-indicator', this._setCustomIndicator.bind(this));
@@ -143,16 +157,16 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         this._customTextId = this._settings.connect('changed::custom-text', this._setCustomLabel.bind(this));
         connectionSettingsArray.push(this._customTextId);
 
-        this._onPillsColorChangedId = this._settings.connect('changed::pills-color', this._onColorChange.bind(this));
+        this._onPillsColorChangedId = this._settings.connect('changed::pills-color', this._onPillsColorChange.bind(this)); // async
         connectionSettingsArray.push(this._onPillsColorChangedId);
 
-        this._onLogoColorChangedId = this._settings.connect('changed::logo-color', this._onColorChange.bind(this));
+        this._onLogoColorChangedId = this._settings.connect('changed::logo-color', this._onLogoColorChange.bind(this));
         connectionSettingsArray.push(this._onLogoColorChangedId);
 
-        this._onLabelColorChangedId = this._settings.connect('changed::label-color', this._onColorChange.bind(this));
+        this._onLabelColorChangedId = this._settings.connect('changed::label-color', this._onLabelColorChange.bind(this));
         connectionSettingsArray.push(this._onLabelColorChangedId);
 
-        this._onCustomIndicatorColorChangedId = this._settings.connect('changed::indicator-color', this._onColorChange.bind(this));
+        this._onCustomIndicatorColorChangedId = this._settings.connect('changed::indicator-color', this._onIndicatorColorChange.bind(this));
         connectionSettingsArray.push(this._onCustomIndicatorColorChangedId);
 
         this._workspaceNamesChangedId = this._workspaces_settings.connect('changed::workspace-names', this._onWorkspaceChanged.bind(this));
@@ -173,13 +187,20 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
             this._customLogo.show();
     }
 
-    _setCustomLabel() {
-        const shouldShowCustomText = this._settings.get_boolean('show-custom-text');
+    _setLabel() {
+        let shouldShowCustomText = this._settings.get_boolean('show-custom-text');
         if (!shouldShowCustomText) {
             if (this._customLabel)
                 this._customLabel.hide();
             return;
         }
+
+        if (this._customLabel)
+            this._customLabel.show();
+    }
+
+    _setCustomLabel() {
+        this._setLabel();
 
         let customText = this._settings.get_string('custom-text');
         switch (customText) {
@@ -205,9 +226,6 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         default:
             this._customLabel.text = customText;
         }
-
-        if (this._customLabel)
-            this._customLabel.show();
     }
 
     _setCustomIndicator() {
@@ -231,26 +249,20 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         this._customIndicator.text = workspaceNames[index] ? `${workspaceNames[index]}` : `ws${index + 1} / ${nWorkspaces}`;
     }
 
-    _onColorChange() {
-        let pillsColor = this._settings.get_string('pills-color');
+
+    _onLogoColorChange() {
         let logoColor = this._settings.get_string('logo-color');
-        let labelColor = this._settings.get_string('label-color');
-        let indicatorColor = this._settings.get_string('indicator-color');
-
         this._customLogo.set_style(`color: ${logoColor}`);
-
-        this._setPillsColor(pillsColor);
-
-        this._customLabel.set_style(`color: ${labelColor}`);
-
-        this._customIndicator.set_style(`color: ${indicatorColor}`);
     }
 
-    async _setPillsColor(color) {
-        const dots = await this._workSpaceIndicators.get_children().filter(e => 'width-multiplier' in e);
-        dots.forEach(dot => {
-            dot._dot.set_style(`background-color: ${color}`);
-        });
+    _onLabelColorChange() {
+        let labelColor = this._settings.get_string('label-color');
+        this._customLabel.set_style(`color: ${labelColor}`);
+    }
+
+    _onIndicatorColorChange() {
+        let indicatorColor = this._settings.get_string('indicator-color');
+        this._customIndicator.set_style(`color: ${indicatorColor}`);
     }
 
     _destroyAllConnections() {
