@@ -1,4 +1,4 @@
-# AddCustomTextToWorkSpaceIndicators
+# Add Custom Text To Workspace Indicators
 Add custom text to newly introduced workspace indicators - GNOME v45
 
 ## Default - Workspace Indiacators as Pills
@@ -18,7 +18,11 @@ Add custom text to newly introduced workspace indicators - GNOME v45
 from extensions.gnome.org <a href="https://extensions.gnome.org/extension/6272/add-custom-text-to-workspace-indicators/">Official</a>
 
 ### Option 2
-Clone the extension
+Install latest version from github
+1. Clone the repo
+2. cd
+3. make
+4. make install
 
 ## About Brand Logo
 By default you see an error image in place of logo.
