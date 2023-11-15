@@ -18,13 +18,7 @@ Add custom text to newly introduced workspace indicators - GNOME v45
 from extensions.gnome.org <a href="https://extensions.gnome.org/extension/6272/add-custom-text-to-workspace-indicators/">Official</a>
 
 ### Option 2
-from extensions.gnome.org <a href="https://extensions.gnome.org/review/download/48159.shell-extension.zip">Under review</a>
-
-Once downloaded, from the root directory of downloads, run the below command to install the extension
-```
-gnome-extensions install -f AddCustomTextToWorkSpaceIndicatorspratap.fastmail.fm.v10.shell-extension.zip
-```
-Enable the extension and customize
+Clone the extension
 
 ## About Brand Logo
 By default you see an error image in place of logo.

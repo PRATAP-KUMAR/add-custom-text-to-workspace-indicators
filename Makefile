@@ -3,15 +3,18 @@ SHELL := /bin/bash
 # Replace these with the name and domain of your extension!
 NAME     := add-custom-text-to-workspace-indicators
 DOMAIN   := pratap.fastmail.fm
-ZIP_NAME := $(NAME)@$(DOMAIN).zip
+UUID	 := $(NAME)@$(DOMAIN)
+ZIP_NAME := $(UUID).zip
+
+# change UUID
+$(shell sed -i '/uuid/c\  "uuid": "$(UUID)",' metadata.json)
 
 # Some of the recipes below depend on some of these files.
 JS_FILES       = $(shell find -type f -and \( -name "*.js" \))
 ICONS          = $(shell find -maxdepth 2 -type f -and \( -name "*.svg" \))
-UI_FILES       = $(shell find -type f -and \( -name "*.ui" \))
 
 # These files will be included in the extension zip file.
-ZIP_CONTENT = $(JS_FILES) $(ICONS) $(LOCALES_MO) \
+ZIP_CONTENT = $(JS_FILES) $(ICONS) \
               schemas/* schemas/gschemas.compiled metadata.json
 
 # These five recipes can be invoked by the user.
@@ -29,13 +32,12 @@ install: $(ZIP_NAME)
 
 # This uninstalls the previously installed extension.
 uninstall:
-	gnome-extensions uninstall "$(NAME)@$(DOMAIN)"
+	gnome-extensions uninstall "$(UUID)"
 
 # This removes all temporary files created with the other recipes.
 clean:
 	rm -rf $(ZIP_NAME) \
-	       schemas/gschemas.compiled \
-	       locale \
+	       schemas/gschemas.compiled
 
 # This bundles the extension and checks whether it is small enough to be uploaded to
 # extensions.gnome.org. We do not use "gnome-extensions pack" for this, as this is not
@@ -52,6 +54,7 @@ $(ZIP_NAME): $(ZIP_CONTENT)
 	         "the extensions website, keep it smaller than 5 MB!"; \
 	    exit 1; \
 	 fi
+
 
 # Compiles the gschemas.compiled file from the gschema.xml file.
 schemas/gschemas.compiled: schemas/org.gnome.shell.extensions.$(NAME).gschema.xml
