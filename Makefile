@@ -6,9 +6,6 @@ DOMAIN   := pratap.fastmail.fm
 UUID	 := $(NAME)@$(DOMAIN)
 ZIP_NAME := $(UUID).zip
 
-# change UUID
-$(shell sed -i '/uuid/c\  "uuid": "$(UUID)",' metadata.json)
-
 # Some of the recipes below depend on some of these files.
 JS_FILES       = $(shell find -type f -and \( -name "*.js" \))
 ICONS          = $(shell find -maxdepth 2 -type f -and \( -name "*.svg" \))
@@ -54,7 +51,6 @@ $(ZIP_NAME): $(ZIP_CONTENT)
 	         "the extensions website, keep it smaller than 5 MB!"; \
 	    exit 1; \
 	 fi
-
 
 # Compiles the gschemas.compiled file from the gschema.xml file.
 schemas/gschemas.compiled: schemas/org.gnome.shell.extensions.$(NAME).gschema.xml
