@@ -24,12 +24,11 @@ Install latest version from github
 3. `make`
 4. `make install`
 
-## About Brand Logo
-By default you see an error image in place of logo.
+## Configuring Logo
+By default you see a photo-symbolic image in place of logo.
 
-The GNOME logo you see in the image is in the extensions `icons` folder.
 You have to keep an svg icon of your choice with the name **brand-logo-symbolic.svg** in your `.icons` folder of home directory.
-When you add the icon for the first time, you need to restart the shell or logout and login to see the change.
+When you add the icon/ change the icon, you need to restart the shell or logout and login to see the change.
 
 ![image](https://github.com/PRATAP-KUMAR/AddCustomTextToWorkSpaceIndicators/assets/40719899/582388c5-6d1e-41bb-a064-1a80b9271508)
 
