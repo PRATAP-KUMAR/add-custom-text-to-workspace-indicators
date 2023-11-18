@@ -18,14 +18,15 @@ export function setButtonColor(button, id, settings) {
 
 /**
  *
+ * @param {string} label label
  * @param {object} button button
  * @param {string} id id
  * @param {object} settings settings
- * @param {object} actionRow set button color
+ * @param {object} actionRow set_button_color
  */
-export function colorButton(button, id, settings, actionRow) {
+export function colorButton(label, button, id, settings, actionRow) {
     let resetColorButton = new Gtk.Button();
-    resetColorButton.set_label('Reset');
+    resetColorButton.set_label(label);
     resetColorButton.connect('clicked', () => {
         settings.set_string(id, '');
         setButtonColor(button, id, settings);
@@ -39,11 +40,11 @@ export function colorButton(button, id, settings, actionRow) {
 
 /**
  *
- * @param {string} label button label
+ * @param {string} label button_label
  * @param {string} id schema_id
  * @param {string} predefinedString 'command to get different names'
  * @param {object} settings settings
- * @param {object} row entry row
+ * @param {object} row entry_row
  */
 export function createGtkButton(label, id, predefinedString, settings, row) {
     let gtkButton = new Gtk.Button();

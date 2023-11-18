@@ -5,7 +5,7 @@ import Clutter from 'gi://Clutter';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as config from 'resource:///org/gnome/shell/misc/config.js';
-import { Extension, InjectionManager } from 'resource:///org/gnome/shell/extensions/extension.js';
+import {Extension, InjectionManager} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 let iconObj = null;
 let labelObj = null;
@@ -19,7 +19,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
             icon_name: 'brand-logo-symbolic',
             icon_size: Main.panel.height,
             y_align: Clutter.ActorAlign.CENTER,
-            fallback_icon_name: 'emblem-photos-symbolic.svg'
+            fallback_icon_name: 'image-missing-symbolic',
         };
 
         labelObj = {
@@ -28,7 +28,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         };
 
         this._settings = this.getSettings();
-        this._workspaces_settings = new Gio.Settings({ schema: 'org.gnome.desktop.wm.preferences' });
+        this._workspaces_settings = new Gio.Settings({schema: 'org.gnome.desktop.wm.preferences'});
 
         this._workSpaceIndicators = Main.panel.statusArea.activities.get_first_child();
 
@@ -89,7 +89,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         let pills = this._workSpaceIndicators.get_children();
         pills.forEach(pill => {
             pill.show(); // show pills
-            pill._dot.set_style('background-color: null'); // remove custom color;
+            pill._dot.set_style(null); // remove custom color;
         });
 
         this._destroyAllConnections();
@@ -203,27 +203,27 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
 
         let customText = this._settings.get_string('custom-text');
         switch (customText) {
-            case '':
-                this._customLabel.text = `${GLib.get_os_info('PRETTY_NAME')} | ${config.PACKAGE_NAME.toUpperCase()} ${config.PACKAGE_VERSION}`;
-                break;
-            case 'username':
-                this._customLabel.text = GLib.get_user_name().toUpperCase();
-                break;
-            case 'hostname':
-                this._customLabel.text = GLib.get_host_name().toUpperCase();
-                break;
-            case 'osname':
-                this._customLabel.text = GLib.get_os_info('PRETTY_NAME');
-                break;
-            case 'kernel': {
-                const unit8array = GLib.spawn_command_line_sync('uname -r')[1];
-                const kernelVersion = new TextDecoder().decode(unit8array).trim();
-                const kernelText = `Kernel Version ${kernelVersion}`;
-                this._customLabel.text = kernelText;
-                break;
-            }
-            default:
-                this._customLabel.text = customText;
+        case '':
+            this._customLabel.text = `${GLib.get_os_info('PRETTY_NAME')} | ${config.PACKAGE_NAME.toUpperCase()} ${config.PACKAGE_VERSION}`;
+            break;
+        case 'username':
+            this._customLabel.text = GLib.get_user_name().toUpperCase();
+            break;
+        case 'hostname':
+            this._customLabel.text = GLib.get_host_name().toUpperCase();
+            break;
+        case 'osname':
+            this._customLabel.text = GLib.get_os_info('PRETTY_NAME');
+            break;
+        case 'kernel': {
+            const unit8array = GLib.spawn_command_line_sync('uname -r')[1];
+            const kernelVersion = new TextDecoder().decode(unit8array).trim();
+            const kernelText = `Kernel Version ${kernelVersion}`;
+            this._customLabel.text = kernelText;
+            break;
+        }
+        default:
+            this._customLabel.text = customText;
         }
     }
 
