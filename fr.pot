@@ -1,0 +1,104 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-11-22 07:47+0530\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: prefs.js:30
+msgid "System Workspace Indicators (Pills)"
+msgstr "Indicateurs de l'espace de travail système (pilules)"
+
+#: prefs.js:35
+msgid "Hide System Workspace Indicators (Pills)"
+msgstr "Masquer les indicateurs de l'espace de travail du système (pilules)"
+
+#: prefs.js:40
+msgid "Pills Color"
+msgstr "Couleur des pilules"
+
+#: prefs.js:42 prefs.js:62 prefs.js:79 prefs.js:119
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: prefs.js:47
+msgid "Logo"
+msgstr "Logo"
+
+#: prefs.js:54
+msgid "Show Logo"
+msgstr "Afficher le logo"
+
+#: prefs.js:55
+msgid ""
+"you can set the logo by placing an svg icon with the name \"brand-logo-"
+"symbolic.svg\" in \".icons\" folder of home directory"
+msgstr "vous pouvez définir le logo en plaçant une icône svg avec le nom 'brand-logo-symbolic.svg' dans le dossier '.icons' du répertoire personnel"
+
+#: prefs.js:60
+msgid "Logo Color"
+msgstr "Couleur du logo"
+
+#: prefs.js:67 prefs.js:89
+msgid "Custom Text"
+msgstr "Texte personnalisé"
+
+#: prefs.js:72
+msgid "Show Custom Text"
+msgstr "Afficher le texte personnalisé"
+
+#: prefs.js:77
+msgid "Custom Text Color"
+msgstr "Couleur du texte personnalisé"
+
+#: prefs.js:82
+msgid "Enter your text or leave it blank for extensions default text"
+msgstr "Entrez votre texte ou laissez-le vide pour le texte par défaut des extensions"
+
+#: prefs.js:90
+msgid "Clear Text"
+msgstr "Effacer le texte"
+
+#: prefs.js:94
+msgid "Predefined Texts"
+msgstr "Textes prédéfinis"
+
+#: prefs.js:99
+msgid "User Name"
+msgstr "Nom d'utilisateur"
+
+#: prefs.js:100
+msgid "Host Name"
+msgstr "Nom d'hôte"
+
+#: prefs.js:101
+msgid "OS Name"
+msgstr "Nom du système d'exploitation"
+
+#: prefs.js:102
+msgid "Kernel Version"
+msgstr "Version du noyau"
+
+#: prefs.js:108
+msgid "Custom Indicators"
+msgstr "Indicateurs personnalisés"
+
+#: prefs.js:113
+msgid "Show Custom Indicator"
+msgstr "Afficher l'indicateur personnalisé"
+
+#: prefs.js:117
+msgid "Custom Indicator Color"
+msgstr "Couleur de l'indicateur personnalisé"
