@@ -26,7 +26,7 @@ zip: $(ZIP_NAME)
 # The install recipes creates the extension zip and installs it.
 install: $(ZIP_NAME)
 	gnome-extensions install "$(ZIP_NAME)" --force
-	@echo "Extension installed successfully! Now restart the Shell ('Alt'+'F2', then 'r' or log out/log in on Wayland)."
+	@echo "Extension installed successfully! Now restart the Shell ('Alt'+'F2', then 'r' or logout/re-login on Wayland)."
 
 # This uninstalls the previously installed extension.
 uninstall:
