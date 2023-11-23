@@ -207,10 +207,10 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
             this._customLabel.text = `${GLib.get_os_info('PRETTY_NAME')} | ${config.PACKAGE_NAME.toUpperCase()} ${config.PACKAGE_VERSION}`;
             break;
         case 'username':
-            this._customLabel.text = GLib.get_user_name().toUpperCase();
+            this._customLabel.text = GLib.get_user_name();
             break;
         case 'hostname':
-            this._customLabel.text = GLib.get_host_name().toUpperCase();
+            this._customLabel.text = GLib.get_host_name();
             break;
         case 'osname':
             this._customLabel.text = GLib.get_os_info('PRETTY_NAME');
