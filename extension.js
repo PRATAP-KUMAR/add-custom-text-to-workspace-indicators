@@ -16,10 +16,10 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         this._injectionManager = new InjectionManager();
 
         iconObj = {
-            icon_name: 'brand-logo-symbolic',
-            icon_size: Main.panel.height,
             y_align: Clutter.ActorAlign.CENTER,
+            icon_name: 'brand-logo-symbolic',
             fallback_icon_name: 'image-missing-symbolic',
+            icon_size: Main.panel.height,
         };
 
         labelObj = {
@@ -68,6 +68,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
             });
         //
 
+        this._setLogo();
         this._setCustomLabel();
         this._setCustomIndicator();
         this._connectSettings();
