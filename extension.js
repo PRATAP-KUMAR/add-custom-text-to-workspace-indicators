@@ -44,29 +44,29 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         // override recalculateDots method
         this._injectionManager.overrideMethod(this._workSpaceIndicators, '_recalculateDots',
             originalMethod => {
-                const extension = this;
-                return function () {
-                    extension._removeChildren(); // remove custom widgets
+                return () => {
+                    this._removeChildren(); // remove custom widgets
+                    Main.notify('', JSON.stringify(this));
 
-                    originalMethod.call(extension._workSpaceIndicators); // call original _recalculateDots method
+                    originalMethod.call(this._workSpaceIndicators); // call original _recalculateDots method
 
-                    let pills = extension._workSpaceIndicators.get_children();
-                    extension._applyColor(pills); // apply color to newly added pill if workspace added based on gsettings
-                    extension._applyVisibility(pills); // hide newly added pill if workspace added based on gsettings
+                    let pills = this._workSpaceIndicators.get_children();
+                    this._applyColor(pills); // apply color to newly added pill if workspace added based on gsettings
+                    this._applyVisibility(pills); // hide newly added pill if workspace added based on gsettings
 
                     // add custom widgets back after calling original _relcalculateDots method
                     // then call respective methods for visibility (show or hide)
-                    extension._workSpaceIndicators.add_child(extension._customLogo);
-                    extension._setLogo();
+                    this._workSpaceIndicators.add_child(this._customLogo);
+                    this._setLogo();
 
-                    extension._workSpaceIndicators.add_child(extension._customLabel);
-                    extension._setLabel();
+                    this._workSpaceIndicators.add_child(this._customLabel);
+                    this._setLabel();
 
-                    extension._workSpaceIndicators.add_child(extension._customIndicator);
-                    extension._setCustomIndicator();
+                    this._workSpaceIndicators.add_child(this._customIndicator);
+                    this._setCustomIndicator();
                 };
-            });
-        //
+            }
+        );
 
         this._setLogo();
         this._setCustomLabel();
