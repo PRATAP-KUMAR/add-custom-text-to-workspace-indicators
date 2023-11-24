@@ -83,6 +83,10 @@ msgstr "Nom d'utilisateur"
 msgid "Host Name"
 msgstr "Nom d'hôte"
 
+#: prefs.js:100
+msgid "Real Name"
+msgstr "Vrai nom"
+
 #: prefs.js:101
 msgid "OS Name"
 msgstr "Nom du système d'exploitation"

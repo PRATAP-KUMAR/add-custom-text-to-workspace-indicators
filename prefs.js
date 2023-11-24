@@ -97,6 +97,7 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtensionPreferences exte
 
         const customTextsPredefinedRow = new Adw.ActionRow();
         customTextsPredefinedRow.add_suffix(createGtkButton(_('User Name'), 'custom-text', 'username', window._settings, entryRow));
+        customTextsPredefinedRow.add_suffix(createGtkButton(_('Real Name'), 'custom-text', 'realname', window._settings, entryRow));
         customTextsPredefinedRow.add_suffix(createGtkButton(_('Host Name'), 'custom-text', 'hostname', window._settings, entryRow));
         customTextsPredefinedRow.add_suffix(createGtkButton(_('OS Name'), 'custom-text', 'osname', window._settings, entryRow));
         customTextsPredefinedRow.add_suffix(createGtkButton(_('Kernel Version'), 'custom-text', 'kernel', window._settings, entryRow));

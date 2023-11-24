@@ -210,6 +210,9 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         case 'username':
             this._customLabel.text = GLib.get_user_name();
             break;
+        case 'realname':
+            this._customLabel.text = GLib.get_real_name();
+            break;
         case 'hostname':
             this._customLabel.text = GLib.get_host_name();
             break;
