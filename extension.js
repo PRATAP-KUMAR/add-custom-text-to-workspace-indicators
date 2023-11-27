@@ -71,10 +71,9 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
         // override vfunc
         this._injectionManager.overrideMethod(Main.panel.statusArea.activities, 'vfunc_event',
             originalMethod => {
-                const extension = Extension.lookupByURL(import.meta.url);
-                return function (event) {
+                return event => {
                     if (event.type() === Clutter.EventType.BUTTON_RELEASE && event.get_button() === 2)
-                        extension.openPreferences();
+                        this.openPreferences();
                     else
                         originalMethod(event);
                 };
