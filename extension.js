@@ -46,7 +46,6 @@ export default class AddCustomTextToWorkSpaceIndicatorsExtension extends Extensi
             originalMethod => {
                 return () => {
                     this._removeChildren(); // remove custom widgets
-                    Main.notify('', JSON.stringify(this));
 
                     originalMethod.call(this._workSpaceIndicators); // call original _recalculateDots method
 
