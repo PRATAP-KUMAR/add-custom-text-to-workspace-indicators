@@ -1,15 +1,15 @@
 # Add Custom Text To Workspace Indicators
-Add custom text to newly introduced workspace indicators - GNOME v45
+Add custom text to newly introduced workspace indicators - GNOME v45 and above
 
 ## Default - Workspace Indiacators as Pills
 ![image](https://github.com/PRATAP-KUMAR/AddCustomTextToWorkSpaceIndicators/assets/40719899/619e25c9-9d55-493b-a378-b011f4e40e2f)
 
 ## With this extension you can
 1. Show/Hide the Pills
-2. Show/Hide your brand logo
-3. Show/Hide custom text or user name or host name or kernel version or leave it for extensions default text
-4. Show/Hide Workspace number indiacator
-5. Can choose different colors
+2. Show your brand logo
+3. Show custom text or user name or host name or kernel version or leave it for extensions default text
+4. Show Workspace number indiacator
+5. set different colors
 
 ![image](https://github.com/PRATAP-KUMAR/AddCustomTextToWorkSpaceIndicators/assets/40719899/8464bf74-ef44-4ee2-bb56-2a99d00e7939)
 
@@ -18,7 +18,7 @@ Add custom text to newly introduced workspace indicators - GNOME v45
 from extensions.gnome.org <a href="https://extensions.gnome.org/extension/6272/add-custom-text-to-workspace-indicators/">Official</a>
 
 ### Option 2
-Install latest version from github
+Install from github
 1. `git clone https://github.com/PRATAP-KUMAR/add-custom-text-to-workspace-indicators.git`
 2. `cd add-custom-text-to-workspace-indicators`
 3. `make`
