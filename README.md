@@ -14,15 +14,7 @@ Add custom text to newly introduced workspace indicators - GNOME v45 and above
 ![image](https://github.com/PRATAP-KUMAR/AddCustomTextToWorkSpaceIndicators/assets/40719899/8464bf74-ef44-4ee2-bb56-2a99d00e7939)
 
 ## Install
-### Option 1
 from extensions.gnome.org <a href="https://extensions.gnome.org/extension/6272/add-custom-text-to-workspace-indicators/">Official</a>
-
-### Option 2
-Install from github
-1. `git clone https://github.com/PRATAP-KUMAR/add-custom-text-to-workspace-indicators.git`
-2. `cd add-custom-text-to-workspace-indicators`
-3. `make`
-4. `make install`
 
 ## Configuring Logo
 By default you see a photo-symbolic image in place of logo.
@@ -43,4 +35,4 @@ $HOME/.local/share/gnome-shell/extensions/add-custom-text-to-workspace-indicator
 
 <hr/>
 
-<a href="https://www.buymeacoffee.com/pratappanabaka"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=pratappanabaka&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" /></a>
+<a href="https://www.buymeacoffee.com/pratappanabaka"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=pratappanabaka&button_colour=FFDD00&font_colour=000000&font_family=Lato&outline_colour=000000&coffee_colour=ffffff" /></a>
