@@ -30,7 +30,7 @@ then copy the folder `locale` from this repo and paste in the root directory of 
 
 Path of the root directory of this extension
 ```
-$HOME/.local/share/gnome-shell/extensions/add-custom-text-to-workspace-indicators@pratap.fastmail.fm/
+$HOME/.local/share/gnome-shell/extensions/AddCustomTextToWorkSpaceIndicators@pratap.fastmail.fm/
 ```
 
 <hr/>
